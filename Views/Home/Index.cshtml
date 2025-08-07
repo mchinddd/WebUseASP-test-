@@ -1,0 +1,561 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="container">
+            <!-- Sidebar -->
+    <partial name="_Sidebar" /> <!-- Tách thành partial view -->
+
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Header -->
+                <div class="header">
+                    <div class="page-title">
+                        <div class="page-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <span id="pageTitle">Trang chủ</span>
+                    </div>
+                    <div class="header-right">
+                        <button title="none" class="theme-toggle" id="themeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <div class="user-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff"
+                                 alt="Avatar"
+                                 class="avatar-img" />
+                            <div class="avatar-dropdown">
+                                <div class="dropdown-header">
+                                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff&size=100"
+                                         alt="User"
+                                         class="dropdown-avatar" />
+                                    <div class="user-info">
+                                        <div class="user-name">Admin User</div>
+                                        <div class="user-role">Quản trị hệ thống</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="fas fa-user-edit dropdown-icon"></i>
+                                    <span class="dropdown-text">Thông tin cá nhân</span>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="fas fa-cog dropdown-icon"></i>
+                                    <span class="dropdown-text">Cài đặt tài khoản</span>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="fas fa-palette dropdown-icon"></i>
+                                    <span class="dropdown-text">Hệ thống</span>
+                                </div>
+                                <div class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt dropdown-icon"></i>
+                                    <span class="dropdown-text">Đăng xuất</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page Content -->
+                <div class="page-content">
+                    <!-- Trong phần dashboardPage -->
+                    <div id="dashboardPage" class="page active-page">
+                        <h1 class="section-title">Tổng quan hệ thống</h1>
+
+                        <div class="cards-container">
+                            <!-- Các card thống kê giữ nguyên -->
+                        </div>
+
+                        <div class="charts-container">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div class="chart-title">Thống kê điểm số</div>
+                                    <div class="chart-actions">
+                                        <button title="Tuần">
+                                            <i class="fas fa-calendar-week"></i>
+                                        </button>
+                                        <button title="Tháng" class="active">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </button>
+                                        <button title="Năm"><i class="fas fa-calendar"></i></button>
+                                    </div>
+                                </div>
+                                <div class="chart-placeholder">
+                                    <i class="fas fa-chart-bar"></i> Biểu đồ điểm số
+                                </div>
+                            </div>
+
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div class="chart-title">Phân bố lớp học</div>
+                                </div>
+                                <div class="chart-placeholder">
+                                    <i class="fas fa-chart-pie"></i> Biểu đồ lớp học
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="data-table">
+                            <div class="table-header">
+                                <div class="table-title">Học sinh mới đăng ký</div>
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" placeholder="Tìm học sinh..." />
+                                </div>
+                            </div>
+                            <!-- Bảng học sinh giữ nguyên -->
+                        </div>
+                    </div>
+
+                   
+
+                    <!-- Classes Page -->
+                    <div id="classesPage" class="page">
+                        <div class="page-header">
+                            <h1 class="section-title">Quản lý Lớp học</h1>
+                            <button class="add-btn">
+                                <i class="fas fa-plus"></i> Thêm lớp học
+                            </button>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-value">42</div>
+                                <div class="stat-label">Tổng lớp học</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <div class="stat-value">28</div>
+                                <div class="stat-label">Giáo viên chủ nhiệm</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="stat-value">1,254</div>
+                                <div class="stat-label">Học sinh</div>
+                            </div>
+                        </div>
+
+                        <div class="data-table">
+                            <div class="table-header">
+                                <div class="table-title">Danh sách lớp học</div>
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" placeholder="Tìm lớp học..." />
+                                </div>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Mã lớp</th>
+                                        <th>Tên lớp</th>
+                                        <th>Giáo viên</th>
+                                        <th>Sĩ số</th>
+                                        <th>Khối</th>
+                                        <th>Năm học</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>10A1</td>
+                                        <td>Lớp 10A1</td>
+                                        <td>Nguyễn Thị Hương</td>
+                                        <td>35</td>
+                                        <td>10</td>
+                                        <td>2023-2024</td>
+                                        <td>
+                                            <button class="action-btn">Xem</button>
+                                            <button class="action-btn">Sửa</button>
+                                        </td>
+                                    </tr>
+                                    <!-- More rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Subjects Page -->
+                    <div id="subjectsPage" class="page">
+                        <div class="page-header">
+                            <h1 class="section-title">Quản lý Môn học</h1>
+                            <button class="add-btn">
+                                <i class="fas fa-plus"></i> Thêm môn học
+                            </button>
+                        </div>
+
+                        <div class="data-table">
+                            <div class="table-header">
+                                <div class="table-title">Danh sách môn học</div>
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" placeholder="Tìm môn học..." />
+                                </div>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Mã môn</th>
+                                        <th>Tên môn học</th>
+                                        <th>Số tiết/tuần</th>
+                                        <th>Giáo viên</th>
+                                        <th>Số lớp dạy</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>TOAN</td>
+                                        <td>Toán học</td>
+                                        <td>4</td>
+                                        <td>Trần Văn Nam</td>
+                                        <td>5</td>
+                                        <td>
+                                            <button class="action-btn">Xem</button>
+                                            <button class="action-btn">Sửa</button>
+                                        </td>
+                                    </tr>
+                                    <!-- More rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Grades Page -->
+                    <div id="gradesPage" class="page">
+                        <div class="page-header">
+                            <h1 class="section-title">Quản lý Điểm số</h1>
+                            <button class="add-btn">
+                                <i class="fas fa-plus"></i> Nhập điểm
+                            </button>
+                        </div>
+
+                        <div class="charts-container">
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div class="chart-title">Thống kê điểm số</div>
+                                    <div class="chart-actions">
+                                        <button title="Học kỳ 1">
+                                            <i class="fas fa-book"></i> HK1
+                                        </button>
+                                        <button title="Học kỳ 2" class="active">
+                                            <i class="fas fa-book-open"></i> HK2
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-placeholder">
+                                    <i class="fas fa-chart-line"></i> Biểu đồ điểm số
+                                </div>
+                            </div>
+
+                            <div class="chart-card">
+                                <div class="chart-header">
+                                    <div class="chart-title">Xếp loại học lực</div>
+                                </div>
+                                <div class="chart-placeholder">
+                                    <i class="fas fa-chart-pie"></i> Biểu đồ học lực
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="data-table">
+                            <div class="table-header">
+                                <div class="table-title">Bảng điểm học kỳ 2</div>
+                                <div class="table-actions">
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" placeholder="Tìm học sinh..." />
+                                    </div>
+                                    <button class="filter-btn">
+                                        <i class="fas fa-filter"></i> Lọc theo lớp
+                                    </button>
+                                </div>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Học sinh</th>
+                                        <th>Toán</th>
+                                        <th>Văn</th>
+                                        <th>Anh</th>
+                                        <th>Lý</th>
+                                        <th>Hóa</th>
+                                        <th>Sinh</th>
+                                        <th>Điểm TB</th>
+                                        <th>Xếp loại</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Nguyễn Văn A</td>
+                                        <td>8.5</td>
+                                        <td>7.5</td>
+                                        <td>9.0</td>
+                                        <td>8.0</td>
+                                        <td>8.5</td>
+                                        <td>9.0</td>
+                                        <td>8.4</td>
+                                        <td><span class="status active">Giỏi</span></td>
+                                    </tr>
+                                    <!-- More rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Page -->
+                    <div id="attendancePage" class="page">
+                        <div class="page-header">
+                            <h1 class="section-title">Quản lý Điểm danh</h1>
+                            <button class="add-btn">
+                                <i class="fas fa-plus"></i> Điểm danh
+                            </button>
+                        </div>
+
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <h2>Lịch điểm danh tháng 5/2024</h2>
+                                <div>
+                                    <button title="none" class="filter-btn">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button title="none" class="filter-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="calendar-grid">
+                                <div class="calendar-day-header">T2</div>
+                                <div class="calendar-day-header">T3</div>
+                                <div class="calendar-day-header">T4</div>
+                                <div class="calendar-day-header">T5</div>
+                                <div class="calendar-day-header">T6</div>
+                                <div class="calendar-day-header">T7</div>
+                                <div class="calendar-day-header">CN</div>
+
+                                <!-- Calendar days -->
+                                <div class="calendar-day">
+                                    <div>1</div>
+                                    <div class="event-item">Vắng: 2 học sinh</div>
+                                </div>
+                                <div class="calendar-day">
+                                    <div>2</div>
+                                </div>
+                                <!-- More calendar days -->
+                            </div>
+                        </div>
+
+                        <div class="data-table">
+                            <div class="table-header">
+                                <div class="table-title">Bảng điểm danh ngày 15/05/2024</div>
+                                <div class="table-actions">
+                                    <button class="filter-btn">
+                                        <i class="fas fa-download"></i> Xuất Excel
+                                    </button>
+                                </div>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Học sinh</th>
+                                        <th>Lớp</th>
+                                        <th>Sáng</th>
+                                        <th>Chiều</th>
+                                        <th>Ghi chú</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Nguyễn Văn A</td>
+                                        <td>10A1</td>
+                                        <td><span class="status active">Có mặt</span></td>
+                                        <td><span class="status active">Có mặt</span></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Trần Thị B</td>
+                                        <td>10A1</td>
+                                        <td><span class="status active">Có mặt</span></td>
+                                        <td><span class="status inactive">Vắng</span></td>
+                                        <td>Bị ốm</td>
+                                    </tr>
+                                    <!-- More rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Reports Page -->
+                    <div id="reportsPage" class="page">
+                        <div class="page-header">
+                            <h1 class="section-title">Báo cáo Thống kê</h1>
+                            <button class="add-btn">
+                                <i class="fas fa-download"></i> Xuất báo cáo
+                            </button>
+                        </div>
+
+                        <div class="cards-container">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Báo cáo học tập</div>
+                                    <div class="card-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                </div>
+                                <div class="card-value">15</div>
+                                <div class="card-footer">
+                                    <i class="fas fa-file-pdf"></i> Tải báo cáo
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Báo cáo điểm danh</div>
+                                    <div class="card-icon">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                </div>
+                                <div class="card-value">8</div>
+                                <div class="card-footer">
+                                    <i class="fas fa-file-pdf"></i> Tải báo cáo
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Báo cáo kỷ luật</div>
+                                    <div class="card-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                </div>
+                                <div class="card-value">3</div>
+                                <div class="card-footer">
+                                    <i class="fas fa-file-pdf"></i> Tải báo cáo
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Báo cáo tài chính</div>
+                                    <div class="card-icon">
+                                        <i class="fas fa-coins"></i>
+                                    </div>
+                                </div>
+                                <div class="card-value">5</div>
+                                <div class="card-footer">
+                                    <i class="fas fa-file-pdf"></i> Tải báo cáo
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">Thống kê tổng hợp năm học</div>
+                            </div>
+                            <div class="chart-placeholder">
+                                <i class="fas fa-chart-bar"></i> Biểu đồ thống kê tổng hợp
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Page -->
+                    <div id="settingsPage" class="page">
+                        <h1 class="section-title">Cài đặt hệ thống</h1>
+
+                        <div class="settings-grid">
+                            <div class="setting-card">
+                                <h2 class="setting-title">Giao diện</h2>
+
+                                <div class="setting-group">
+                                    <h3>Chủ đề màu</h3>
+                                    <div class="color-picker">
+                                        <div class="color-option active"
+                                             style="background: #4361ee"></div>
+                                        <div class="color-option" style="background: #e74c3c"></div>
+                                        <div class="color-option" style="background: #27ae60"></div>
+                                        <div class="color-option" style="background: #9b59b6"></div>
+                                        <div class="color-option" style="background: #f39c12"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-card">
+                                <h2 class="setting-title">Cài đặt hệ thống</h2>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">Cho phép đăng ký mới</div>
+                                    <label class="switch">
+                                        <input title="none" type="checkbox" checked />
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">Thông báo qua email</div>
+                                    <label class="switch">
+                                        <input title="none" type="checkbox" checked />
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">Tự động sao lưu dữ liệu</div>
+                                    <label class="switch">
+                                        <input title="none" type="checkbox" />
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="setting-item">
+                                    <div class="setting-label">Hiển thị cảnh báo</div>
+                                    <label class="switch">
+                                        <input title="none" type="checkbox" checked />
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-card">
+                                <h2 class="setting-title">Tài khoản</h2>
+
+                                <div class="avatar-upload">
+                                    <div class="avatar-preview">
+                                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff"
+                                             alt="Avatar" />
+                                        <button title="none" class="upload-btn">
+                                            <i class="fas fa-camera"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Họ và tên</label>
+                                    <input title="none" type="text" value="Admin User" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input title="none"
+                                           type="email"
+                                           value="admin@edumanage.com" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Số điện thoại</label>
+                                    <input title="none" type="tel" value="+84 123 456 789" />
+                                </div>
+
+                                <button class="save-btn">Lưu thay đổi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">© 2025 Hệ thống Quản lý Học Sinh - Phiên bản 1.0</div>
+        
