@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<WebUseASP_test_.Models.Student>
+
+@{
     ViewData["Title"] = "Quản Lý Học Sinh";
     Layout = "_Layout";
 }
@@ -72,32 +74,42 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>HS001</td>
-                                <td>
-                                    <div class="student-info">
-                                        <img src="https://ui-avatars.com/api/?name=Nguyễn+Văn+A&background=4361ee&color=fff"
-                                             alt="Avatar"
-                                             class="student-avatar" />
-                                        <span>Nguyễn Văn A</span>
-                                    </div>
-                                </td>
-                                <td>10A1</td>
-                                <td>15/05/2007</td>
-                                <td>Nam</td>
-                                <td>8.2</td>
-                                <td><span class="status active">Đang học</span></td>
-                                <td>
-                                    <button title="none" class="action-btn">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button title="none" class="action-btn danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <!-- Thêm các hàng khác -->
+                            @foreach (var student in Model)
+                            {
+                                <tr>
+                                    <td>@student.StudentCode</td>
+                                    <td>
+                                        <div class="student-info">
+                                            <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(student.User.FullName)&background=4361ee&color=fff"
+                                                 alt="Avatar"
+                                                 class="student-avatar" />
+                                            <span>@student.User.FullName</span>
+                                        </div>
+                                    </td>
+                                    <td>@(student.Class != null ? student.Class.ClassName : "Chưa xếp lớp")</td>
+                                    <td>@student.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                                    <td>@student.Gender</td>
+                                    <td>
+                                        <!-- Tạm để trống điểm TB vì chưa có dữ liệu tính toán -->
+                                        N/A
+                                    </td>
+                                    <td>
+                                        <span class="status @(student.User.IsActive ? "active" : "inactive")">
+                                            @(student.User.IsActive ? "Đang học" : "Ngừng học")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button title="Sửa" class="action-btn">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button title="Xóa" class="action-btn danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
+
                     </table>
 
                     <div class="table-footer">

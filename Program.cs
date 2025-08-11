@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using WebUseASP_test_.Data;
+
+
 namespace WebUseASP_test_
 {
     public class Program
@@ -8,6 +12,10 @@ namespace WebUseASP_test_
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             var app = builder.Build();
 
