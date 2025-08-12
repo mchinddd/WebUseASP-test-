@@ -1,0 +1,53 @@
+﻿@*
+   Views/Shared/_Header.cshtml
+*@
+@{
+    ViewData["Title"] = "Header";
+}
+
+<!-- Header -->
+<div class="header">
+    <div class="page-title">
+        <div class="page-icon">
+            <i class="fas @ViewData["PageIcon"]"></i>
+        </div>
+        <span id="pageTitle">@ViewData["PageTitle"]</span>
+    </div>
+    <div class="header-right">
+        <button title="none" class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+        <div class="user-avatar">
+            <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff"
+                 alt="Avatar"
+                 class="avatar-img" />
+            <div class="avatar-dropdown">
+                <div class="dropdown-header">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff&size=100"
+                         alt="User"
+                         class="dropdown-avatar" />
+                    <div class="user-info">
+                        <div class="user-name">Admin User</div>
+                        <div class="user-role">Quản trị hệ thống</div>
+                    </div>
+                </div>
+                <div class="dropdown-item">
+                    <i class="fas fa-user-edit dropdown-icon"></i>
+                    <span class="dropdown-text">Thông tin cá nhân</span>
+                </div>
+                <div class="dropdown-item">
+                    <i class="fas fa-cog dropdown-icon"></i>
+                    <span class="dropdown-text">Cài đặt tài khoản</span>
+                </div>
+                <div class="dropdown-item">
+                    <i class="fas fa-palette dropdown-icon"></i>
+                    <span class="dropdown-text">Hệ thống</span>
+                </div>
+                <div class="dropdown-item">
+                    <i class="fas fa-sign-out-alt dropdown-icon"></i>
+                    <span class="dropdown-text">Đăng xuất</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

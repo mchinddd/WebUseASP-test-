@@ -11,7 +11,7 @@ namespace WebUseASP_test_.Models
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }
         public string Address { get; set; }
-        public int? ClassID { get; set; }
+        public int ClassID { get; set; }
 
         public User User { get; set; }
         public Class Class { get; set; }

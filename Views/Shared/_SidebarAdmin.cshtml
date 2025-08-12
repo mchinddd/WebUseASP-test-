@@ -1,0 +1,80 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "SidebarAdmin";
+}
+
+<!-- Views/Shared/_SidebarAdmin.cshtml -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <i class="fas fa-graduation-cap logo-icon"></i>
+            <span class="logo-text">EduManage</span>
+        </div>
+    </div>
+
+    <div class="sidebar-content">
+        <!-- Dashboard -->
+        <a asp-controller="Admin" asp-action="Dashboard" class="menu-item">
+            <i class="fas fa-tachometer-alt menu-icon"></i>
+            <span class="menu-text">Tổng quan</span>
+        </a>
+
+        <!-- Quản lý người dùng -->
+        <a asp-controller="Admin" asp-action="Users" class="menu-item">
+            <i class="fas fa-users-cog menu-icon"></i>
+            <span class="menu-text">Quản lý người dùng</span>
+        </a>
+
+        <!-- Quản lý học sinh -->
+        <a asp-controller="Admin" asp-action="Students" class="menu-item">
+            <i class="fas fa-user-graduate menu-icon"></i>
+            <span class="menu-text">Quản lý học sinh</span>
+        </a>
+
+        <!-- Quản lý giáo viên -->
+        <a asp-controller="Admin" asp-action="Teachers" class="menu-item">
+            <i class="fas fa-chalkboard-teacher menu-icon"></i>
+            <span class="menu-text">Quản lý giáo viên</span>
+        </a>
+
+        <!-- Quản lý lớp học -->
+        <a asp-controller="Admin" asp-action="Classes" class="menu-item">
+            <i class="fas fa-chalkboard menu-icon"></i>
+            <span class="menu-text">Quản lý lớp học</span>
+        </a>
+
+        <!-- Quản lý môn học -->
+        <a asp-controller="Admin" asp-action="Subjects" class="menu-item">
+            <i class="fas fa-book menu-icon"></i>
+            <span class="menu-text">Quản lý môn học</span>
+        </a>
+
+        <!-- Quản lý điểm số -->
+        <a asp-controller="Admin" asp-action="Grades" class="menu-item">
+            <i class="fas fa-chart-line menu-icon"></i>
+            <span class="menu-text">Quản lý điểm số</span>
+        </a>
+
+        <!-- Quản lý điểm danh -->
+        <a asp-controller="Admin" asp-action="Attendance" class="menu-item">
+            <i class="fas fa-calendar-check menu-icon"></i>
+            <span class="menu-text">Quản lý điểm danh</span>
+        </a>
+
+        <!-- Báo cáo -->
+        <a asp-controller="Admin" asp-action="Reports" class="menu-item">
+            <i class="fas fa-file-alt menu-icon"></i>
+            <span class="menu-text">Báo cáo thống kê</span>
+        </a>
+    </div>
+
+    <div class="sidebar-bottom">
+        <!-- Cài đặt hệ thống -->
+        <a asp-controller="Admin" asp-action="Settings" class="menu-item">
+            <i class="fas fa-cog menu-icon"></i>
+            <span class="menu-text">Cài đặt hệ thống</span>
+        </a>
+    </div>
+</div>

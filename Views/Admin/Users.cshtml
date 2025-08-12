@@ -1,0 +1,52 @@
+﻿@model IEnumerable<WebUseASP_test_.Models.User>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "_Layout";
+}
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="main-wrapper">
+    <partial name="_SidebarAdmin" />
+    <div class="main-content">
+        <partial name="_Header" />
+        <div class="content">
+            <h1>Quản lý người dùng</h1>
+            <a class="btn btn-primary mb-3" asp-action="CreateUser">+ Thêm người dùng</a>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tài khoản</th>
+                        <th>Role</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        <tr>
+                            <td>@u.UserID</td>
+                            <td>@u.Username</td>
+                            <td>@u.RoleID</td>
+                            <td>
+                                <a class="btn btn-warning btn-sm" asp-action="EditUser" asp-route-id="@u.UserID">Sửa</a>
+                                <a class="btn btn-danger btn-sm" asp-action="DeleteUser" asp-route-id="@u.UserID"
+                                   onclick="return confirm('Xóa người dùng này?')">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+}

@@ -1,0 +1,144 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_Layout"; // Thêm layout chung nếu cần
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="main-wrapper">
+    <!-- Sidebar -->
+    <partial name="_SidebarAdmin" /> <!-- Tách thành partial view -->
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <partial name="_Header" /> <!-- Tách thành partial view -->
+        <!-- Content -->
+        <div class="content">
+            <h1 class="section-title">Tổng quan hệ thống</h1>
+
+            <div class="row">
+                <!-- Thống kê học sinh -->
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Học sinh</div>
+                            <i class="fas fa-user-graduate card-icon"></i>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="text-primary">1,254</h3>
+                            <p class="text-muted">Tổng số học sinh</p>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary"
+                                     style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thống kê giáo viên -->
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Giáo viên</div>
+                            <i class="fas fa-chalkboard-teacher card-icon"></i>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="text-success">68</h3>
+                            <p class="text-muted">Tổng số giáo viên</p>
+                            <div class="progress">
+                                <div class="progress-bar bg-success"
+                                     style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thống kê lớp học -->
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Lớp học</div>
+                            <i class="fas fa-chalkboard card-icon"></i>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="text-info">42</h3>
+                            <p class="text-muted">Tổng số lớp học</p>
+                            <div class="progress">
+                                <div class="progress-bar bg-info" style="width: 55%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thống kê môn học -->
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Môn học</div>
+                            <i class="fas fa-book card-icon"></i>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="text-warning">15</h3>
+                            <p class="text-muted">Tổng số môn học</p>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning"
+                                     style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Thống kê điểm số</div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Biểu đồ sẽ được thêm ở đây -->
+                            <div class="d-flex align-items-center justify-content-center"
+                                 style="height: 300px">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-bar text-muted"
+                                       style="font-size: 48px"></i>
+                                    <p class="mt-2">Biểu đồ điểm số sẽ được hiển thị ở đây</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Phân bố lớp học</div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Biểu đồ sẽ được thêm ở đây -->
+                            <div class="d-flex align-items-center justify-content-center"
+                                 style="height: 300px">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-pie text-muted"
+                                       style="font-size: 48px"></i>
+                                    <p class="mt-2">Biểu đồ lớp học sẽ được hiển thị ở đây</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">© 2025 Hệ thống Quản lý Học Sinh - Phiên bản 1.0</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+}

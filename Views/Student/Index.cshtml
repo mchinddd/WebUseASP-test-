@@ -2,12 +2,15 @@
 
 @{
     ViewData["Title"] = "Quản Lý Học Sinh";
-    Layout = "_Layout";
+}
+@section Styles {
+    @* <link rel="stylesheet" href="~/css/student.css" /> *@
+    <link rel="stylesheet" href="~/css/style.css" />
 }
 
 <div class="container">
     <!-- Sidebar -->
-    <partial name="_Sidebar" />
+    <partial name="_SidebarStudent" />
 
     <!-- Main Content -->
     <div class="main-content">

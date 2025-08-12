@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WebUseASP_test_.Models;
 
@@ -10,7 +10,7 @@ namespace WebUseASP_test_.Controllers
         {
             // Trong HomeController
             ViewData["PageIcon"] = "fa-home";
-            ViewData["PageTitle"] = "Trang ch?";
+            ViewData["PageTitle"] = "Trang chủ";
             return View();
         }
     }

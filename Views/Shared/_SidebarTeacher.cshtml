@@ -1,0 +1,62 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "SidebarTeacher";
+}
+
+<!-- Views/Shared/_SidebarTeacher.cshtml -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <i class="fas fa-graduation-cap logo-icon"></i>
+            <span class="logo-text">EduManage</span>
+        </div>
+    </div>
+
+    <div class="sidebar-content">
+        <!-- Dashboard -->
+        <a asp-controller="Teacher" asp-action="Dashboard" class="menu-item">
+            <i class="fas fa-tachometer-alt menu-icon"></i>
+            <span class="menu-text">Tổng quan</span>
+        </a>
+
+        <!-- Lớp học của tôi -->
+        <a asp-controller="Teacher" asp-action="MyClasses" class="menu-item">
+            <i class="fas fa-chalkboard menu-icon"></i>
+            <span class="menu-text">Lớp học của tôi</span>
+        </a>
+
+        <!-- Điểm danh -->
+        <a asp-controller="Teacher" asp-action="Attendance" class="menu-item">
+            <i class="fas fa-calendar-check menu-icon"></i>
+            <span class="menu-text">Điểm danh</span>
+        </a>
+
+        <!-- Nhập điểm -->
+        <a asp-controller="Teacher" asp-action="GradeEntry" class="menu-item">
+            <i class="fas fa-edit menu-icon"></i>
+            <span class="menu-text">Nhập điểm</span>
+        </a>
+
+        <!-- Thời khóa biểu -->
+        <a asp-controller="Teacher" asp-action="Schedule" class="menu-item">
+            <i class="fas fa-calendar-alt menu-icon"></i>
+            <span class="menu-text">Thời khóa biểu</span>
+        </a>
+
+        <!-- Học sinh của tôi -->
+        <a asp-controller="Teacher" asp-action="MyStudents" class="menu-item">
+            <i class="fas fa-user-graduate menu-icon"></i>
+            <span class="menu-text">Học sinh của tôi</span>
+        </a>
+    </div>
+
+    <div class="sidebar-bottom">
+        <!-- Tài khoản -->
+        <a asp-controller="Teacher" asp-action="Profile" class="menu-item">
+            <i class="fas fa-user menu-icon"></i>
+            <span class="menu-text">Tài khoản</span>
+        </a>
+    </div>
+</div>

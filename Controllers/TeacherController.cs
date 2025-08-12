@@ -6,26 +6,24 @@ using System.Linq;
 
 namespace WebUseASP_test_.Controllers
 {
-    public class StudentController : Controller
+    public class TeacherController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public StudentController(ApplicationDbContext context)
+        public TeacherController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public IActionResult Index()
         {
-            // Lấy danh sách học sinh kèm thông tin User và Class
             var students = _context.Students
-                .Include(s => s.User)
-                .Include(s => s.Class)
-                .ToList();
+           .Include(s => s.User)
+           .Include(s => s.Class)
+           .ToList();
 
-            ViewData["PageIcon"] = "fa-users";
-            ViewData["PageTitle"] = "Quản lý học sinh";
-
+            ViewData["PageIcon"] = "fa-home";
+            ViewData["PageTitle"] = "Trang chủ Teacher";
             return View(students);
         }
     }

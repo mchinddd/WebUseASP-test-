@@ -1,0 +1,59 @@
+﻿@model IEnumerable<dynamic>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Quản lý Teachers";
+    Layout = "_Layout";
+}
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="main-wrapper">
+    <partial name="_SidebarAdmin" />
+    <div class="main-content">
+        <partial name="_Header" />
+        <div class="content">
+            <h1>Quản lý giáo viên</h1>
+            <a class="btn btn-primary mb-3" asp-action="CreateTeacher">+ Thêm giáo viên</a>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Mã GV</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Điện thoại</th>
+                        <th>Khoa</th>
+                        <th>Chuyên ngành</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model)
+                    {
+                        <tr>
+                            <td>@t.TeacherCode</td>
+                            <td>@t.FullName</td>
+                            <td>@t.Email</td>
+                            <td>@t.Phone</td>
+                            <td>@t.Department</td>
+                            <td>@t.Specialization</td>
+                            <td>
+                                <a asp-action="EditTeacher" asp-route-id="@t.TeacherID" class="btn btn-sm btn-warning">Sửa</a>
+                                <a asp-action="DeleteTeacher" asp-route-id="@t.TeacherID" class="btn btn-sm btn-danger" onclick="return confirm('Xóa giáo viên này?');">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+}
