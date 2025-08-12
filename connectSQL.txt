@@ -1,0 +1,270 @@
+-- Tạo database
+CREATE DATABASE StudentManagementDB;
+GO
+
+USE StudentManagementDB;
+GO
+
+-- Tạo bảng Roles (Vai trò)
+CREATE TABLE Roles (
+    RoleID INT PRIMARY KEY IDENTITY(1,1),
+    RoleName NVARCHAR(50) NOT NULL UNIQUE
+);
+GO
+
+-- Thêm dữ liệu vai trò
+INSERT INTO Roles (RoleName) VALUES 
+('Admin'),
+('Teacher'),
+('Student');
+GO
+
+-- Tạo bảng Users (Người dùng)
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY IDENTITY(1,1),
+    Username NVARCHAR(50) NOT NULL UNIQUE,
+    Password NVARCHAR(255) NOT NULL,
+    FullName NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) NOT NULL UNIQUE,
+    Phone NVARCHAR(20),
+    RoleID INT NOT NULL,
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    IsActive BIT DEFAULT 1,
+    FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
+);
+GO
+
+-- Tạo bảng Students (Sinh viên)
+CREATE TABLE Students (
+    StudentID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT NOT NULL UNIQUE,
+    StudentCode NVARCHAR(20) NOT NULL UNIQUE,
+    DateOfBirth DATE NOT NULL,
+    Gender NVARCHAR(10) CHECK (Gender IN ('Male', 'Female', 'Other')),
+    Address NVARCHAR(255),
+    ClassID INT,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+GO
+
+-- Tạo bảng Teachers (Giảng viên)
+CREATE TABLE Teachers (
+    TeacherID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT NOT NULL UNIQUE,
+    TeacherCode NVARCHAR(20) NOT NULL UNIQUE,
+    Department NVARCHAR(100),
+    Specialization NVARCHAR(100),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+GO
+
+-- Tạo bảng Classes (Lớp học)
+CREATE TABLE Classes (
+    ClassID INT PRIMARY KEY IDENTITY(1,1),
+    ClassName NVARCHAR(50) NOT NULL,
+    TeacherID INT,
+    AcademicYear NVARCHAR(20),
+    FOREIGN KEY (TeacherID) REFERENCES Teachers(TeacherID)
+);
+GO
+
+-- Thêm khóa ngoại cho bảng Students
+ALTER TABLE Students
+ADD FOREIGN KEY (ClassID) REFERENCES Classes(ClassID);
+GO
+
+-- Tạo bảng Subjects (Môn học)
+CREATE TABLE Subjects (
+    SubjectID INT PRIMARY KEY IDENTITY(1,1),
+    SubjectName NVARCHAR(100) NOT NULL,
+    Credits INT NOT NULL,
+    Description NVARCHAR(255)
+);
+GO
+
+-- Tạo bảng Grades (Điểm số)
+CREATE TABLE Grades (
+    GradeID INT PRIMARY KEY IDENTITY(1,1),
+    StudentID INT NOT NULL,
+    SubjectID INT NOT NULL,
+    Score FLOAT NOT NULL CHECK (Score BETWEEN 0 AND 10),
+    Semester INT,
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (SubjectID) REFERENCES Subjects(SubjectID)
+);
+GO
+
+-- Tạo bảng Attendances (Điểm danh)
+CREATE TABLE Attendances (
+    AttendanceID INT PRIMARY KEY IDENTITY(1,1),
+    StudentID INT NOT NULL,
+    ClassID INT NOT NULL,
+    AttendanceDate DATE NOT NULL,
+    MorningSession BIT DEFAULT 0,
+    AfternoonSession BIT DEFAULT 0,
+    Notes NVARCHAR(255),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (ClassID) REFERENCES Classes(ClassID)
+);
+GO
+
+-- Tạo bảng SystemSettings (Cài đặt hệ thống)
+CREATE TABLE SystemSettings (
+    SettingID INT PRIMARY KEY IDENTITY(1,1),
+    SettingName NVARCHAR(100) NOT NULL UNIQUE,
+    SettingValue NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(255)
+);
+GO
+
+-- Bảng xác thực
+CREATE TABLE Authentication (
+    UserID INT PRIMARY KEY,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    PasswordSalt NVARCHAR(255) NOT NULL,
+    LastLogin DATETIME,
+    FailedLoginAttempts INT DEFAULT 0,
+    IsLocked BIT DEFAULT 0,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+-- Bảng Refresh Token (cho JWT)
+CREATE TABLE RefreshTokens (
+    TokenID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT NOT NULL,
+    Token NVARCHAR(255) NOT NULL,
+    Expires DATETIME NOT NULL,
+    Created DATETIME NOT NULL DEFAULT GETDATE(),
+    Revoked DATETIME,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+INSERT INTO [dbo].[Users] (Username, Password, FullName, Email, Phone, RoleID, CreatedDate, IsActive)
+VALUES ('hs001', '123456', N'Nguyễn Văn A', 'a@example.com', '0123456789', 3, GETDATE(), 1);
+
+
+
+-- Thêm 10 user cho học sinh
+INSERT INTO Users (Username, Password, FullName, Email, Phone, RoleID)
+VALUES
+('hs002', '123456', N'Trần Thị Đạt', 'hs002@example.com', '0900000002', 3),
+('hs003', '123456', N'Lê Văn CHính', 'hs003@example.com', '0900000003', 3),
+('hs004', '123456', N'Phạm Thị Dũng', 'hs004@example.com', '0900000004', 3),
+('hs005', '123456', N'Võ Văn Em', 'hs005@example.com', '0900000005', 3),
+('hs006', '123456', N'Bùi Thị Fương', 'hs006@example.com', '0900000006', 3),
+('hs007', '123456', N'Hoàng Văn Giang', 'hs007@example.com', '0900000007', 3),
+('hs008', '123456', N'Ngô Thị Hạnh', 'hs008@example.com', '0900000008', 3),
+('hs009', '123456', N'Đỗ Văn Ien', 'hs009@example.com', '0900000009', 3),
+('hs010', '123456', N'Phan Thị Jung', 'hs010@example.com', '0900000010', 3);
+DECLARE @UserID INT = SCOPE_IDENTITY();
+-- Thêm 10 học sinh tương ứng
+INSERT INTO [dbo].[Students] (UserID, StudentCode, DateOfBirth, Gender, Address, ClassID)
+VALUES
+(4, 'HS002', '2007-08-20', 'Female', N'Hà Nội', NULL),
+(5, 'HS003', '2006-11-05', 'Male', N'Hải Phòng', NULL),
+(6, 'HS004', '2007-01-12', 'Female', N'Nam Định', NULL),
+(7, 'HS005', '2007-09-25', 'Male', N'Thái Bình', NULL),
+(8, 'HS006', '2006-07-14', 'Female', N'Quảng Ninh', NULL),
+(9, 'HS007', '2007-03-08', 'Male', N'Hà Nam', NULL),
+(10, 'HS008', '2006-12-30', 'Female', N'Ninh Bình', NULL),
+(11, 'HS009', '2007-10-10', 'Male', N'Bắc Ninh', NULL),
+(12, 'HS010', '2007-06-22', 'Female', N'Hưng Yên', NULL);
+
+
+INSERT INTO [dbo].[Students] (UserID, StudentCode, DateOfBirth, Gender, Address, ClassID)
+VALUES (@UserID, 'HS001', '2007-05-15', N'Male', N'Hà Nội', NULL);
+
+SELECT s.StudentID, s.StudentCode, u.FullName, u.Email, s.DateOfBirth, s.Gender
+FROM Students s
+JOIN Users u ON s.UserID = u.UserID;
+
+-- Thêm tài khoản Admin
+INSERT INTO Users (Username, Password, FullName, Email, Phone, RoleID)
+VALUES (
+    'admin01',
+    '123456',  -- mật khẩu test, chưa mã hóa
+    N'Quản trị viên hệ thống',
+    'admin@example.com',
+    '0123456789',
+    (SELECT RoleID FROM Roles WHERE RoleName = 'Admin')
+);
+
+-- Thêm tài khoản Teacher
+INSERT INTO Users (Username, Password, FullName, Email, Phone, RoleID)
+VALUES (
+    'teacher01',
+    '123456', -- mật khẩu test, chưa mã hóa
+    N'Nguyễn Văn Giảng Viên',
+    'teacher@example.com',
+    '0987654321',
+    (SELECT RoleID FROM Roles WHERE RoleName = 'Teacher')
+);
+
+-- Gán TeacherCode cho Teacher vừa tạo
+INSERT INTO Teachers (UserID, TeacherCode, Department, Specialization)
+VALUES (
+    (SELECT UserID FROM Users WHERE Username = 'teacher01'),
+    'GV001',
+    N'Khoa Công nghệ Thông tin',
+    N'Lập trình Web'
+);
+
+-- Thêm tài khoản Teacher
+INSERT INTO Users (Username, Password, FullName, Email, Phone, RoleID)
+VALUES (
+    'teacher02',
+    '123456', -- mật khẩu test, chưa mã hóa
+    N'Nguyễn Văn Minh',
+    'teacher1@example.com',
+    '0941515487',
+    (SELECT RoleID FROM Roles WHERE RoleName = 'Teacher')
+);
+
+-- Gán TeacherCode cho Teacher vừa tạo
+INSERT INTO Teachers (UserID, TeacherCode, Department, Specialization)
+VALUES (
+    (SELECT UserID FROM Users WHERE Username = 'teacher02'),
+    'GV002',
+    N'Khoa Thiết kế đồ họa',
+    N'Thiết kế 3D'
+);
+
+-- Thêm tài khoản Teacher
+INSERT INTO Users (Username, Password, FullName, Email, Phone, RoleID)
+VALUES (
+    'teacher03',
+    '123456', -- mật khẩu test, chưa mã hóa
+    N'Nguyễn Văn Sự',
+    'teacher3@example.com',
+    '0941515527',
+    (SELECT RoleID FROM Roles WHERE RoleName = 'Teacher')
+);
+
+-- Gán TeacherCode cho Teacher vừa tạo
+INSERT INTO Teachers (UserID, TeacherCode, Department, Specialization)
+VALUES (
+    (SELECT UserID FROM Users WHERE Username = 'teacher03'),
+    'GV003',
+    N'Khoa Truyền thông',
+    N'Quảng bá, quảng cáo và tiếp thị'
+);
+
+UPDATE Students
+SET ClassID = 
+    CASE 
+        WHEN StudentID BETWEEN 1 AND 6 THEN 7430 -- IT
+        WHEN StudentID BETWEEN 7 AND 10 THEN 4971 -- Marketing
+        ELSE 7452 -- Graphic Design
+    END
+WHERE ClassID IS NULL;
+
+SET IDENTITY_INSERT Classes ON;
+
+INSERT INTO Classes (ClassID, ClassName, TeacherID, AcademicYear)
+VALUES 
+(7430, 'Information Technology', 1, '2025'),
+(4971, 'Digital Marketing', 3, '2025'),
+(7452, 'Graphic Design', 2 , '2025');
+
+SET IDENTITY_INSERT Classes OFF;  
