@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using WebUseASP_test_.Data;
 using WebUseASP_test_.Models;
+using WebUseASP_test_.ViewModels;
 
 namespace WebUseASP_test_.Controllers
 {
@@ -33,75 +35,42 @@ namespace WebUseASP_test_.Controllers
         // Quản lý người dùng
         public IActionResult Users()
         {
-            var users = _context.Users.ToList();
+            var users = _context.Users
+        .Include(u => u.Student)
+        .Include(u => u.Teacher)
+        .Include(u => u.Role)
+        .ToList();
+
             return View(users);
         }
 
-        // Tạo người dùng mới (GET)
         [HttpGet]
         public IActionResult CreateUser()
         {
             return View();
         }
 
-        // Tạo người dùng mới (POST) - ĐÃ CẬP NHẬT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateUser(User model)
+        public async Task<IActionResult> CreateUser(User user)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    // Kiểm tra username đã tồn tại
-                    if (_context.Users.Any(u => u.Username == model.Username))
-                    {
-                        ModelState.AddModelError("Username", "Tài khoản đã tồn tại");
-                        return View(model);
-                    }
-
-                    // Mã hóa mật khẩu
-                    model.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
-                    model.CreatedDate = DateTime.Now;
-
-                    _context.Users.Add(model);
-                    _context.SaveChanges();
-
-                    // Tạo Student/Teacher nếu cần
-                    if (model.RoleID == 3) // Student
-                    {
-                        _context.Students.Add(new Student
-                        {
-                            UserID = model.UserID,
-                            StudentCode = "ST" + model.UserID.ToString("D4"),
-                            DateOfBirth = DateTime.Today.AddYears(-15),
-                            Gender = "Nam",
-                            Address = "Chưa cập nhật"
-                        });
-                    }
-                    else if (model.RoleID == 2) // Teacher
-                    {
-                        _context.Teachers.Add(new Teacher
-                        {
-                            UserID = model.UserID,
-                            TeacherCode = "TC" + model.UserID.ToString("D4"),
-                            Department = "Chưa cập nhật"
-                        });
-                    }
-
-                    _context.SaveChanges();
-                    TempData["SuccessMessage"] = "Thêm người dùng thành công!";
-                    return RedirectToAction("Users");
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $"Lỗi: {ex.Message}");
-                }
+                user.CreatedDate = DateTime.Now;
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Thêm người dùng thành công!";
+                return RedirectToAction("Index");
             }
-            return View(model);
+
+            TempData["ErrorMessage"] = "Có lỗi xảy ra, vui lòng kiểm tra lại thông tin.";
+            return View(user);
         }
 
-        // Sửa người dùng (GET) - ĐÃ CẬP NHẬT
+
+
+
+        // GET: Hiển thị form sửa user
         [HttpGet]
         public IActionResult EditUser(int id)
         {
@@ -110,109 +79,109 @@ namespace WebUseASP_test_.Controllers
                 .Include(u => u.Teacher)
                 .FirstOrDefault(u => u.UserID == id);
 
-            if (user == null) return NotFound();
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Người dùng không tồn tại!";
+                return RedirectToAction("Users");
+            }
+
             return View(user);
         }
 
-        // Sửa người dùng (POST) - ĐÃ CẬP NHẬT
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult EditUser(User model)
         {
-            if (ModelState.IsValid)
+            // Lấy entity gốc từ DB
+            var user = _context.Users
+                .Include(u => u.Student)
+                .Include(u => u.Teacher)
+                .FirstOrDefault(u => u.UserID == model.UserID);
+
+            if (user == null)
             {
-                try
-                {
-                    // Lấy user hiện tại
-                    var existingUser = _context.Users
-                        .Include(u => u.Student)
-                        .Include(u => u.Teacher)
-                        .First(u => u.UserID == model.UserID);
-
-                    // Cập nhật thông tin cơ bản
-                    existingUser.FullName = model.FullName;
-                    existingUser.Email = model.Email;
-                    existingUser.Phone = model.Phone;
-                    existingUser.RoleID = model.RoleID;
-                    existingUser.IsActive = model.IsActive;
-
-                    // Xử lý mật khẩu (chỉ cập nhật nếu có thay đổi)
-                    if (!string.IsNullOrEmpty(model.Password))
-                    {
-                        existingUser.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
-                    }
-
-                    // Xử lý Student/Teacher khi thay đổi Role
-                    if (model.RoleID == 3 && existingUser.Student == null)
-                    {
-                        _context.Students.Add(new Student
-                        {
-                            UserID = model.UserID,
-                            StudentCode = "ST" + model.UserID.ToString("D4"),
-                            DateOfBirth = DateTime.Today.AddYears(-15),
-                            Gender = "Nam"
-                        });
-
-                        // Xóa Teacher nếu có
-                        if (existingUser.Teacher != null)
-                        {
-                            _context.Teachers.Remove(existingUser.Teacher);
-                        }
-                    }
-                    else if (model.RoleID == 2 && existingUser.Teacher == null)
-                    {
-                        _context.Teachers.Add(new Teacher
-                        {
-                            UserID = model.UserID,
-                            TeacherCode = "TC" + model.UserID.ToString("D4")
-                        });
-
-                        // Xóa Student nếu có
-                        if (existingUser.Student != null)
-                        {
-                            _context.Students.Remove(existingUser.Student);
-                        }
-                    }
-
-                    _context.SaveChanges();
-                    TempData["SuccessMessage"] = "Cập nhật thành công!";
-                    return RedirectToAction("Users");
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $"Lỗi: {ex.Message}");
-                }
+                TempData["ErrorMessage"] = "Người dùng không tồn tại!";
+                return RedirectToAction("Users");
             }
-            return View(model);
+
+            // Cập nhật thông tin User
+            user.Username = model.Username;
+            user.FullName = model.FullName;
+            user.Email = model.Email;
+            user.Phone = model.Phone;
+            user.RoleID = model.RoleID;
+            user.IsActive = model.IsActive;
+
+            // Cập nhật thông tin học sinh nếu có
+            if (user.Student != null && model.Student != null)
+            {
+                user.Student.StudentCode = model.Student.StudentCode;
+                user.Student.DateOfBirth = model.Student.DateOfBirth;
+                user.Student.Gender = model.Student.Gender;
+                user.Student.Address = model.Student.Address;
+                user.Student.ClassID = model.Student.ClassID;
+            }
+
+            // Cập nhật thông tin giáo viên nếu có
+            if (user.Teacher != null && model.Teacher != null)
+            {
+                user.Teacher.TeacherCode = model.Teacher.TeacherCode;
+                user.Teacher.Department = model.Teacher.Department;
+                user.Teacher.Specialization = model.Teacher.Specialization;
+            }
+
+            _context.SaveChanges(); // Quan trọng: lưu vào DB
+            TempData["SuccessMessage"] = "Cập nhật thành công!";
+            return RedirectToAction("Users");
         }
 
-        // Xóa người dùng - ĐÃ CẬP NHẬT
-        public IActionResult DeleteUser(int id)
+
+
+        // Xóa người dùng
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            try
+            var user = await _context.Users
+                .Include(u => u.Student)
+                    .ThenInclude(s => s.Grades)
+                .Include(u => u.Student)
+                    .ThenInclude(s => s.Attendances)
+                .Include(u => u.Teacher)
+                    .ThenInclude(t => t.Classes)
+                .FirstOrDefaultAsync(u => u.UserID == id);
+
+            if (user == null)
             {
-                var user = _context.Users
-                    .Include(u => u.Student)
-                    .Include(u => u.Teacher)
-                    .FirstOrDefault(u => u.UserID == id);
-
-                if (user != null)
-                {
-                    // Xóa Student/Teacher trước
-                    if (user.Student != null) _context.Students.Remove(user.Student);
-                    if (user.Teacher != null) _context.Teachers.Remove(user.Teacher);
-
-                    _context.Users.Remove(user);
-                    _context.SaveChanges();
-                    TempData["SuccessMessage"] = "Xóa người dùng thành công!";
-                }
+                TempData["ErrorMessage"] = "Người dùng không tồn tại!";
                 return RedirectToAction("Users");
             }
-            catch (Exception ex)
+
+            // Xóa dữ liệu liên quan
+            if (user.Student != null)
             {
-                TempData["ErrorMessage"] = $"Lỗi khi xóa: {ex.Message}";
-                return RedirectToAction("Users");
+                if (user.Student.Grades != null)
+                    _context.Grades.RemoveRange(user.Student.Grades);
+
+                if (user.Student.Attendances != null)
+                    _context.Attendances.RemoveRange(user.Student.Attendances);
+
+                _context.Students.Remove(user.Student);
             }
+
+            if (user.Teacher != null)
+            {
+                if (user.Teacher.Classes != null)
+                    _context.Classes.RemoveRange(user.Teacher.Classes);
+
+                _context.Teachers.Remove(user.Teacher);
+            }
+
+            _context.Users.Remove(user);
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Xóa người dùng thành công!";
+            return RedirectToAction("Users");
         }
 
         //hien thi du lieu student
@@ -256,6 +225,44 @@ namespace WebUseASP_test_.Controllers
 
             return View(teachers);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteTeacher(int id)
+        {
+            // Lấy giáo viên và dữ liệu liên quan
+            var teacher = await _context.Teachers
+                .Include(t => t.Classes)
+                .Include(t => t.User)
+                 // nếu có bảng Schedules
+                .FirstOrDefaultAsync(t => t.TeacherID == id);
+
+            if (teacher == null)
+            {
+                TempData["ErrorMessage"] = "Giáo viên không tồn tại!";
+                return RedirectToAction("Teachers");
+            }
+
+            // Kiểm tra dữ liệu liên quan
+            bool hasClasses = teacher.Classes != null && teacher.Classes.Any();
+            //bool hasSchedules = teacher.Schedules != null && teacher.Schedules.Any();
+
+            if (hasClasses)
+            {
+                TempData["ErrorMessage"] = "Không thể xóa giáo viên này vì đang dạy lớp hoặc có lịch!";
+                return RedirectToAction("Teachers");
+            }
+
+            // Nếu không có dữ liệu liên quan, xóa User và Teacher
+            if (teacher.User != null)
+                _context.Users.Remove(teacher.User);
+
+            _context.Teachers.Remove(teacher);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Xóa giáo viên thành công!";
+            return RedirectToAction("Teachers");
+        }
+
 
         // Quản lý lớp học
         public IActionResult Classes()

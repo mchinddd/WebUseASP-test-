@@ -26,6 +26,8 @@ namespace WebUseASP_test_
             });
             var app = builder.Build();
 
+            //builder.Services.AddControllersWithViews();
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

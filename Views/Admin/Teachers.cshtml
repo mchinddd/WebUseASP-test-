@@ -43,7 +43,10 @@
                             <td>@t.Specialization</td>
                             <td>
                                 <a asp-action="EditTeacher" asp-route-id="@t.TeacherID" class="btn btn-sm btn-warning">Sửa</a>
-                                <a asp-action="DeleteTeacher" asp-route-id="@t.TeacherID" class="btn btn-sm btn-danger" onclick="return confirm('Xóa giáo viên này?');">Xóa</a>
+                                <form asp-action="DeleteTeacher" asp-route-id="@t.TeacherID" method="post" style="display:inline;"
+                                      onsubmit="return confirm('Xóa giáo viên này?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                                </form>
                             </td>
                         </tr>
                     }
