@@ -56,13 +56,19 @@
             <i class="fas fa-bell menu-icon"></i>
             <span class="menu-text">Thông báo</span>
         </a>
-    </div>
 
-    <div class="sidebar-bottom">
         <!-- Tài liệu học tập -->
         <a asp-controller="Student" asp-action="Materials" class="menu-item">
             <i class="fas fa-book-open menu-icon"></i>
             <span class="menu-text">Tài liệu học tập</span>
+        </a>
+    </div>
+
+    <div class="sidebar-bottom">
+        <!-- Cài đặt hệ thống -->
+        <a asp-controller="Admin" asp-action="Settings" class="menu-item">
+            <i class="fas fa-cog menu-icon"></i>
+            <span class="menu-text">Cài đặt hệ thống</span>
         </a>
     </div>
 </div>

@@ -1,0 +1,356 @@
+﻿@{
+    ViewData["Title"] = "Quản Lý Học Sinh";
+}
+@section Styles {
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="~/css/style.css" />
+}
+
+<div class="container">
+    <!-- Sidebar -->
+    <partial name="_SidebarStudent" />
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Header -->
+        <partial name="_Header" />
+
+        <!-- Content -->
+        <div class="content">
+            <div class="welcome-card">
+                <h2>Chào mừng bạn trở lại!</h2>
+                <p>
+                    Đây là bảng tổng quan học tập của bạn. Theo dõi tiến độ và thành
+                    tích học tập tại một nơi.
+                </p>
+            </div>
+
+            <div class="dashboard-cards">
+                <!-- Thống kê học tập -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Thống kê học tập</div>
+                        <div class="card-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">8.2</div>
+                            <div class="stat-label">Điểm trung bình</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Môn học</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">92%</div>
+                            <div class="stat-label">Tham gia lớp</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Hoàn thành</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tiến độ học tập -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Tiến độ học tập</div>
+                        <div class="card-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <div class="progress-title">Toán cao cấp</div>
+                                <div class="progress-percent">85%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-1"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <div class="progress-title">Lập trình Web</div>
+                                <div class="progress-percent">70%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-2"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <div class="progress-title">Tiếng Anh</div>
+                                <div class="progress-percent">45%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-3"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <div class="progress-title">Mạng máy tính</div>
+                                <div class="progress-percent">65%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Môn học nổi bật -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Môn học nổi bật</div>
+                        <div class="card-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                    </div>
+                    <div class="subject-list">
+                        <div class="subject-item">
+                            <div class="subject-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="subject-details">
+                                <div class="subject-name">Toán cao cấp</div>
+                                <div class="subject-info">
+                                    <span><i class="fas fa-user"></i> Nguyễn Thị B</span>
+                                    <span><i class="fas fa-clock"></i> 30 giờ</span>
+                                </div>
+                            </div>
+                            <div class="subject-grade">8.5</div>
+                        </div>
+                        <div class="subject-item">
+                            <div class="subject-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="subject-details">
+                                <div class="subject-name">Lập trình Web</div>
+                                <div class="subject-info">
+                                    <span><i class="fas fa-user"></i> Trần Văn C</span>
+                                    <span><i class="fas fa-clock"></i> 45 giờ</span>
+                                </div>
+                            </div>
+                            <div class="subject-grade">9.0</div>
+                        </div>
+                        <div class="subject-item">
+                            <div class="subject-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="subject-details">
+                                <div class="subject-name">Tiếng Anh</div>
+                                <div class="subject-info">
+                                    <span><i class="fas fa-user"></i> Lê Thị D</span>
+                                    <span><i class="fas fa-clock"></i> 25 giờ</span>
+                                </div>
+                            </div>
+                            <div class="subject-grade">7.5</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sự kiện sắp tới -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Sự kiện sắp tới</div>
+                        <div class="card-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                    </div>
+                    <div class="upcoming-list">
+                        <div class="upcoming-item">
+                            <div class="upcoming-date">
+                                <div class="upcoming-day">18</div>
+                                <div class="upcoming-month">TH10</div>
+                            </div>
+                            <div class="upcoming-details">
+                                <div class="upcoming-title">Hạn nộp bài tập lớn</div>
+                                <div class="upcoming-time">
+                                    <i class="fas fa-clock"></i> 23:59 - Lập trình Web
+                                </div>
+                            </div>
+                        </div>
+                        <div class="upcoming-item">
+                            <div class="upcoming-date">
+                                <div class="upcoming-day">20</div>
+                                <div class="upcoming-month">TH10</div>
+                            </div>
+                            <div class="upcoming-details">
+                                <div class="upcoming-title">Kiểm tra giữa kỳ</div>
+                                <div class="upcoming-time">
+                                    <i class="fas fa-clock"></i> 7:30 - Toán cao cấp
+                                </div>
+                            </div>
+                        </div>
+                        <div class="upcoming-item">
+                            <div class="upcoming-date">
+                                <div class="upcoming-day">25</div>
+                                <div class="upcoming-month">TH10</div>
+                            </div>
+                            <div class="upcoming-details">
+                                <div class="upcoming-title">Seminar nhóm</div>
+                                <div class="upcoming-time">
+                                    <i class="fas fa-clock"></i> 13:30 - Mạng máy tính
+                                </div>
+                            </div>
+                        </div>
+                        <div class="upcoming-item">
+                            <div class="upcoming-date">
+                                <div class="upcoming-day">28</div>
+                                <div class="upcoming-month">TH10</div>
+                            </div>
+                            <div class="upcoming-details">
+                                <div class="upcoming-title">Thi thực hành</div>
+                                <div class="upcoming-time">
+                                    <i class="fas fa-clock"></i> 9:00 - Lập trình hướng đối
+                                    tượng
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Biểu đồ tiến độ -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Xu hướng học tập</div>
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Thành tích gần đây -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Thành tích gần đây</div>
+                        <div class="card-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                    <div class="achievement-list">
+                        <div class="subject-item">
+                            <div class="subject-icon"
+                                 style="
+                    background: rgba(249, 199, 79, 0.1);
+                    color: var(--warning);
+                  ">
+                                <i class="fas fa-medal"></i>
+                            </div>
+                            <div class="subject-details">
+                                <div class="subject-name">Điểm cao nhất lớp</div>
+                                <div class="subject-info">
+                                    <span>
+                                        <i class="fas fa-book"></i> Lập trình Web - Bài kiểm tra
+                                        số 2
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="badge-status badge-warning">9.5 điểm</span>
+                        </div>
+                        <div class="subject-item">
+                            <div class="subject-icon"
+                                 style="
+                    background: rgba(72, 149, 239, 0.1);
+                    color: var(--info);
+                  ">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="subject-details">
+                                <div class="subject-name">Hoàn thành học phần</div>
+                                <div class="subject-info">
+                                    <span><i class="fas fa-book"></i> Cơ sở dữ liệu</span>
+                                </div>
+                            </div>
+                            <span class="badge-status badge-info">8.7 điểm</span>
+                        </div>
+                        <div class="subject-item">
+                            <div class="subject-icon"
+                                 style="
+                    background: rgba(76, 201, 240, 0.1);
+                    color: var(--success);
+                  ">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="subject-details">
+                                <div class="subject-name">Tham gia tích cực</div>
+                                <div class="subject-info">
+                                    <span>
+                                        <i class="fas fa-book"></i> Toán rời rạc - 5 buổi liên
+                                        tiếp
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="badge-status badge-success">+5 điểm cộng</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">© 2025 Hệ thống Quản lý Học Sinh - Phiên bản 1.0</div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+                      // Biểu đồ tiến độ
+        const ctx = document.getElementById("progressChart").getContext("2d");
+        const progressChart = new Chart(ctx, {
+                      type: "line",
+                      data: {
+                        labels: ["Tuần 1", "Tuần 2", "Tuần 3", "Tuần 4", "Tuần 5", "Tuần 6"],
+                        datasets: [
+                          {
+                            label: "Điểm trung bình",
+                            data: [7.2, 7.5, 7.8, 8.0, 8.2, 8.3],
+                            borderColor: "#4361ee",
+                            backgroundColor: "rgba(67, 97, 238, 0.1)",
+                            tension: 0.3,
+                            fill: true,
+                          },
+                          {
+                            label: "Tỷ lệ hoàn thành",
+                            data: [45, 55, 65, 70, 75, 80],
+                            borderColor: "#4cc9f0",
+                            backgroundColor: "rgba(76, 201, 240, 0.1)",
+                            tension: 0.3,
+                            fill: true,
+                          },
+                        ],
+                      },
+                      options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                          y: {
+                            beginAtZero: false,
+                            min: 5,
+                            max: 10,
+                            ticks: {
+                              stepSize: 1,
+                            },
+                          },
+                        },
+                        plugins: {
+                          legend: {
+                            position: "top",
+                          },
+                          title: {
+                            display: false,
+                          },
+                        },
+                      },
+                    });
+    </script>
+}

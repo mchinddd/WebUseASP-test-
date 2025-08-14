@@ -1,0 +1,155 @@
+﻿@model List<WebUseASP_test_.Models.Schedule>
+@{
+    ViewData["Title"] = "Lịch học";
+    DateTime startOfWeek = ViewBag.StartOfWeek;
+    DateTime endOfWeek = ViewBag.EndOfWeek;
+    int weekOffset = ViewBag.WeekOffset;
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="~/css/style.css" />
+}
+
+<div class="container">
+    <!-- Sidebar -->
+    <partial name="_SidebarStudent" />
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Header -->
+        <partial name="_Header" />
+
+        <!-- Content -->
+        <div class="content">
+            <div class="week-navigation">
+                <a asp-action="Schedule" asp-route-weekOffset="@(weekOffset - 1)" class="btn btn-primary">
+                    <i class="fas fa-chevron-left"></i> Tuần trước
+                </a>
+                <span class="current-week">
+                    Tuần từ @startOfWeek.ToString("dd/MM/yyyy") đến @endOfWeek.ToString("dd/MM/yyyy")
+                </span>
+                <a asp-action="Schedule" asp-route-weekOffset="@(weekOffset + 1)" class="btn btn-primary">
+                    Tuần sau <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+
+            <div class="schedule-card">
+                <div class="card-header">
+                    <div class="card-title">Thời khóa biểu</div>
+                </div>
+
+                <div class="schedule-grid">
+                    @{
+                        // Tạo mảng cho 7 ngày trong tuần
+                        var daysOfWeek = new[] { 2, 3, 4, 5, 6, 7, 8 }; // 2=Thứ 2, 8=Chủ nhật
+                    }
+
+                    @foreach (var day in daysOfWeek)
+                    {
+                        // Tính ngày cụ thể cho mỗi thứ trong tuần
+                        DateTime dayDate = startOfWeek.AddDays(day - 2);
+                        var daySchedules = Model.Where(s => s.DayOfWeek == day).ToList();
+
+                        <div class="day-column">
+                            <div class="day-header">
+                                @GetDayName(day) - @dayDate.ToString("dd/MM")
+                            </div>
+
+                            @if (daySchedules.Any())
+                            {
+                                foreach (var item in daySchedules)
+                                {
+                                    <div class="schedule-item">
+                                        <div class="subject-time">@item.StartTime.ToString(@"hh\:mm") - @item.EndTime.ToString(@"hh\:mm")</div>
+                                        <div class="subject-name">@item.Subject.SubjectName</div>
+                                        <div class="teacher-name">@item.Teacher?.User?.FullName</div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="no-class">Không có tiết học</div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetDayName(int day)
+    {
+        return day switch
+        {
+            2 => "Thứ 2",
+            3 => "Thứ 3",
+            4 => "Thứ 4",
+            5 => "Thứ 5",
+            6 => "Thứ 6",
+            7 => "Thứ 7",
+            _ => "Chủ nhật"
+        };
+    }
+}
+
+<style>
+    .schedule-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .day-column {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .day-header {
+        font-weight: bold;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        text-align: center;
+        color: #4361ee;
+    }
+
+    .schedule-item {
+        background-color: white;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .subject-time {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 5px;
+    }
+
+    .subject-name {
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+
+    .teacher-name {
+        font-size: 12px;
+        color: #4361ee;
+    }
+
+    .no-class {
+        text-align: center;
+        color: #6c757d;
+        font-style: italic;
+        padding: 10px;
+    }
+</style>

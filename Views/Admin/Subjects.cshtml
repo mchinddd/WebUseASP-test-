@@ -1,0 +1,67 @@
+﻿@model IEnumerable<WebUseASP_test_.Models.Subject>
+@{
+    ViewBag.Title = "Quản lý môn học";
+    Layout = "_Layout";
+}
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="main-wrapper">
+    <partial name="_SidebarAdmin" />
+    <div class="main-content">
+        <partial name="_Header" />
+        <div class="content">
+            <h2>Quản lý Môn học</h2>
+
+            <div class="mb-3">
+                <a href="@Url.Action("CreateSubject", "Admin")" class="btn btn-primary">+ Thêm môn học</a>
+            </div>
+
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Tên môn học</th>
+                        <th>Mô tả</th>
+                        <th>Giáo viên phụ trách</th>
+                        <th>Khối/Lớp áp dụng</th>
+                        <th>Trạng thái</th>
+                        <th style="width:150px">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var subject in Model)
+                    {
+                        <tr>
+                            <td>@subject.SubjectName</td>
+                            <td>@subject.Description</td>
+                            <td>@subject.TeacherName</td>
+                            <td>@subject.GradeOrClass</td>
+                            <td>
+                                @if (subject.IsActive)
+                                {
+                                    <span class="badge bg-success">Hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Vô hiệu</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("EditSubject", "Admin", new { id = subject.SubjectID })" class="btn btn-sm btn-warning">Sửa</a>
+                                <a href="@Url.Action("DeleteSubject", "Admin", new { id = subject.SubjectID })" class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Bạn có chắc muốn xóa môn học này?');">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+}

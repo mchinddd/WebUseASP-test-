@@ -1,0 +1,219 @@
+﻿@model IEnumerable<WebUseASP_test_.Models.Grade>
+
+@{
+    ViewData["Title"] = "Quản lý điểm số";
+    Layout = "_Layout";
+}
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="main-wrapper">
+    <partial name="_SidebarAdmin" />
+    <div class="main-content">
+        <partial name="_Header" />
+        <div class="content">
+    <div class="page-header">
+        <h1 class="section-title">Quản lý điểm số</h1>
+        <div class="header-actions">
+            <button class="add-btn" id="btnAddGrade">
+                <i class="fas fa-plus"></i> Thêm điểm
+            </button>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchGrade" placeholder="Tìm kiếm..." />
+            </div>
+        </div>
+    </div>
+
+    <!-- Bộ lọc -->
+    <div class="filters mb-4">
+        <form method="get" asp-action="Grades" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Kỳ học</label>
+                <select name="semester" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Tất cả --</option>
+                    @foreach (var sem in (IEnumerable<int?>)ViewBag.Semesters)
+                    {
+                        var isSelected = sem == ViewBag.SelectedSemester;
+                        <option value="@(sem?.ToString() ?? "")" selected="@(isSelected ? "selected" : null)">
+                            @(sem.HasValue ? $"Kỳ {sem}" : "Không xác định")
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Môn học</label>
+                <select name="subjectId" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Tất cả môn --</option>
+                    @foreach (var subject in ViewBag.Subjects)
+                    {
+                        <option value="@subject.SubjectID"
+                                selected="@(subject.SubjectID == ViewBag.SelectedSubjectId ? "selected" : null)">
+                            @subject.SubjectName
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Lớp học</label>
+                <select name="classId" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Tất cả lớp --</option>
+                    @foreach (var cls in ViewBag.Classes)
+                    {
+                        <option value="@cls.ClassID"
+                                selected="@(cls.ClassID == ViewBag.SelectedClassId ? "selected" : null)">
+                            @cls.ClassName
+                        </option>
+                    }
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <!-- Thống kê nhanh -->
+    <div class="stats-grid mb-4">
+        <div class="stat-card">
+            <div class="stat-icon bg-primary">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-value">@ViewBag.TotalGrades</div>
+            <div class="stat-label">Tổng số điểm</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-success">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-value">@ViewBag.AverageScore.ToString("0.00")</div>
+            <div class="stat-label">Điểm trung bình</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-info">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stat-value">@ViewBag.StudentCount</div>
+            <div class="stat-label">Học sinh</div>
+        </div>
+    </div>
+
+    <!-- Bảng điểm -->
+    <div class="data-table card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã HS</th>
+                            <th>Tên học sinh</th>
+                            <th>Lớp</th>
+                            <th>Môn học</th>
+                            <th class="text-center">Điểm</th>
+                            <th class="text-center">Kỳ</th>
+                            <th class="text-center">Ngày nhập</th>
+                            <th class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var g in Model)
+                        {
+                            <tr>
+                                <td>@g.Student?.StudentCode</td>
+                                <td>@g.Student?.User?.FullName</td>
+                                <td>@g.Student?.Class?.ClassName</td>
+                                <td>@g.Subject?.SubjectName</td>
+                                <td class="text-center @(g.Score >= 8 ? "text-success fw-bold" : g.Score >= 5 ? "" : "text-danger")">
+                                    @g.Score.ToString("0.0")
+                                </td>
+                                <td class="text-center">@(g.Semester.HasValue ? $"Kỳ {g.Semester}" : "-")</td>
+                                <td class="text-center">@g.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-primary edit-btn" data-id="@g.GradeID">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-btn" data-id="@g.GradeID">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Phân trang -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>Hiển thị @Model.Count() trên tổng @ViewBag.TotalRecords bản ghi</div>
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item @(ViewBag.PageNumber == 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("Grades", new { page = ViewBag.PageNumber - 1, semester = ViewBag.SelectedSemester })">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.PageNumber ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Grades", new { page = i, semester = ViewBag.SelectedSemester })">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(ViewBag.PageNumber == ViewBag.TotalPages ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("Grades", new { page = ViewBag.PageNumber + 1, semester = ViewBag.SelectedSemester })">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<!-- Modal thêm/chỉnh sửa điểm -->
+<div class="modal fade" id="gradeModal" tabindex="-1" aria-hidden="true">
+    <!-- Nội dung modal -->
+</div>
+
+@section Scripts {
+    <script>
+        // Xử lý tìm kiếm
+        document.getElementById('searchGrade').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                row.style.display = rowText.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Xử lý nút thêm/sửa
+        document.getElementById('btnAddGrade').addEventListener('click', function() {
+            // Mở modal thêm điểm
+        });
+
+        // Xử lý nút sửa
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const gradeId = this.dataset.id;
+                // Load dữ liệu và mở modal
+            });
+        });
+
+        // Xử lý nút xóa
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const gradeId = this.dataset.id;
+                if (confirm('Bạn có chắc chắn muốn xóa điểm này?')) {
+                    // Gọi API xóa
+                }
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+}

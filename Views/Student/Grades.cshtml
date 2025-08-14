@@ -1,0 +1,73 @@
+﻿@model WebUseASP_test_.ViewModels.GradesPageViewModel
+@{
+    ViewData["Title"] = "Bảng điểm";
+}
+@section Styles {
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="~/css/style.css" />
+}
+
+<div class="container">
+    <!-- Sidebar -->
+    <partial name="_SidebarStudent" />
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Header -->
+        <partial name="_Header" />
+
+        <!-- Content -->
+        <div class="content">
+<div class="grades-card">
+    <div class="card-header">
+        <div class="card-title">Điểm số kỳ @Model.SelectedSemester</div>
+        <div class="semester-selector">
+            <a asp-action="Grades" asp-route-semester="1" class="semester-btn @(Model.SelectedSemester == 1 ? "active" : "")">Kỳ 1</a>
+            <a asp-action="Grades" asp-route-semester="2" class="semester-btn @(Model.SelectedSemester == 2 ? "active" : "")">Kỳ 2</a>
+        </div>
+    </div>
+
+    <table class="grades-table">
+        <thead>
+            <tr>
+                <th>Chuyên ngành</th>
+                <th>Part 1</th>
+                <th>Part 2</th>
+                <th>Final</th>
+                <th>Tổng kết</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Grades != null && Model.Grades.Any())
+            {
+                foreach (var g in Model.Grades)
+                {
+                    string gradeClass =
+                    g.Average >= 8 ? "grade-excellent" :
+                    g.Average >= 6.5 ? "grade-good" :
+                    "grade-average";
+
+                    <tr>
+                        <td class="subject-name">@g.SubjectName</td>
+                        <td class="grade-value @gradeClass">@(g.Grade15?.ToString("0.0") ?? "-")</td>
+                        <td class="grade-value @gradeClass">@(g.Grade1Tiet?.ToString("0.0") ?? "-")</td>
+                        <td class="grade-value @gradeClass">@(g.FinalExam?.ToString("0.0") ?? "-")</td>
+                        <td class="grade-value @gradeClass">@g.Average</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;">Không có dữ liệu điểm cho kỳ này</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+﻿@model WebUseASP_test_.Models.Subject
+@{
+    ViewBag.Title = "Thêm môn học";
+    Layout = "_Layout";
+}
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="main-wrapper">
+    <partial name="_SidebarAdmin" />
+    <div class="main-content">
+        <partial name="_Header" />
+        <div class="content">
+
+            <h2>Thêm Môn học</h2>
+
+            @using (Html.BeginForm("CreateSubject", "Admin", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.SubjectName, "Tên môn học")
+                    @Html.TextBoxFor(m => m.SubjectName, new { @class = "form-control", placeholder = "Nhập tên môn học" })
+                    @Html.ValidationMessageFor(m => m.SubjectName)
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Description, "Mô tả")
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 3, placeholder = "Mô tả ngắn gọn" })
+                    @Html.ValidationMessageFor(m => m.Description)
+                </div>
+
+                <div class="mb-3">
+                    @Html.Label("Giáo viên phụ trách")
+                    @Html.DropDownListFor(m => m.TeacherID, ViewBag.Teachers as SelectList, "-- Chọn giáo viên --", new { @class = "form-control" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.Label("Khối/Lớp áp dụng")
+                    @Html.DropDownListFor(m => m.GradeOrClass, ViewBag.GradesOrClasses as SelectList, "-- Chọn khối/lớp --", new { @class = "form-control" })
+                </div>
+
+                <div class="form-check mb-3">
+                    @Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input" })
+                    @Html.LabelFor(m => m.IsActive, "Hoạt động", new { @class = "form-check-label" })
+                </div>
+
+                <button type="submit" class="btn btn-success">Lưu</button>
+                <a href="@Url.Action("Subjects", "Admin")" class="btn btn-secondary">Hủy</a>
+            }
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+}

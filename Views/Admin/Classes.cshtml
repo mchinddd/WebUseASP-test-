@@ -1,0 +1,58 @@
+﻿@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Quản lý lớp học";
+    Layout = "_Layout";
+}
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="main-wrapper">
+    <partial name="_SidebarAdmin" />
+    <div class="main-content">
+        <partial name="_Header" />
+        <div class="content">
+<h2>Quản lý lớp học</h2>
+
+<a asp-action="CreateClass" class="btn btn-primary mb-3">Thêm lớp học</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên lớp</th>
+            <th>Năm học</th>
+            <th>Giáo viên chủ nhiệm</th>
+            <th>Sĩ số</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="ClassDetails" asp-route-id="@c.ClassID">
+                        @c.ClassName
+                    </a>
+                </td>
+                <td>@c.AcademicYear</td>
+                <td>@c.TeacherName</td>
+                <td>@c.StudentCount</td>
+                <td>
+                    <a asp-action="EditClass" asp-route-id="@c.ClassID" class="btn btn-sm btn-warning">Sửa</a>
+                    <a asp-action="DeleteClass" asp-route-id="@c.ClassID" class="btn btn-sm btn-danger" onclick="return confirm('Xóa lớp này?');">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+}

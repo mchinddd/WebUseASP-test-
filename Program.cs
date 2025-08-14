@@ -1,3 +1,4 @@
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebUseASP_test_.Data;
 
@@ -14,9 +15,15 @@ namespace WebUseASP_test_
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                 options.LoginPath = "/Login/Index";
+                 options.AccessDeniedPath = "/Login/AccessDenied";
+                 options.ExpireTimeSpan = TimeSpan.FromDays(7); // Thời gian ghi nhớ
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -32,13 +39,12 @@ namespace WebUseASP_test_
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Login}/{action=Index}/{id?}");
-
-
             app.Run();
         }
     }

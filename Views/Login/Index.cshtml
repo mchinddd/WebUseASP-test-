@@ -1,22 +1,133 @@
 ﻿@{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Đăng nhập";
+    Layout = "_Layout";
+}
+@section Styles {
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Custom Login CSS -->
+    <link rel="stylesheet" href="~/css/login.css" />
 }
 
-<h2>Login</h2>
+    
 
-<form method="post">
-    <div>
-        <label>Username:</label>
-        <input type="text" name="username" required />
-    </div>
-    <div>
-        <label>Password:</label>
-        <input type="password" name="password" required />
-    </div>
-    <button type="submit">Login</button>
-</form>
+    <div class="login-container">
+        <!-- Floating elements -->
+        <div class="floating circle-1"></div>
+        <div class="floating circle-2"></div>
+        <div class="floating circle-3"></div>
 
-@if (ViewBag.Error != null)
-{
-    <p style="color:red">@ViewBag.Error</p>
-}
+        <!-- Left side - Information -->
+        <div class="login-left">
+            <h1>Hệ thống Quản lý Học sinh/Sinh viên</h1>
+            <p>Đăng nhập để truy cập vào hệ thống quản lý học tập và quản trị toàn diện</p>
+
+            <ul class="features">
+                <li><i class="fas fa-check"></i> Quản lý thông tin học sinh/sinh viên</li>
+                <li><i class="fas fa-check"></i> Theo dõi điểm số và kết quả học tập</li>
+                <li><i class="fas fa-check"></i> Quản lý thời khóa biểu và lịch học</li>
+                <li><i class="fas fa-check"></i> Hệ thống điểm danh thông minh</li>
+                <li><i class="fas fa-check"></i> Phân quyền truy cập chi tiết</li>
+            </ul>
+        </div>
+
+        <!-- Right side - Login Form -->
+        <div class="login-right">
+            <div class="login-logo">
+                <i class="fas fa-user-graduate"></i>
+                <h2>Đăng nhập</h2>
+            </div>
+
+            <form class="login-form" method="post">
+                <div class="form-group">
+                    <label for="username">Tên đăng nhập</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" placeholder="Nhập tên đăng nhập" required
+                               value="@(ViewBag.Username ?? "")">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <div class="input-with-icon password-container">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required>
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <a href="#" class="forgot-password">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="login-button">Đăng nhập</button>
+            </form>
+
+            <!-- Error message -->
+            @if (ViewBag.Error != null)
+            {
+                <div class="error-message" id="errorMessage">
+                    @ViewBag.Error
+                </div>
+            }
+
+            <div class="signup-link">
+                Chưa có tài khoản? <a href="#">Liên hệ quản trị viên</a>
+            </div>
+        </div>
+    </div>
+    @section Scripts {
+    <script>
+        // Xử lý hiển thị/ẩn mật khẩu
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Hiệu ứng khi focus vào input
+        document.querySelectorAll('.login-form input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.parentElement.querySelector('label').style.color = 'var(--primary)';
+                this.parentElement.querySelector('i').style.color = 'var(--primary)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.parentElement.querySelector('label').style.color = 'var(--dark)';
+                this.parentElement.querySelector('i').style.color = 'var(--gray)';
+            });
+        });
+
+        // Giữ lại giá trị nếu có lỗi
+        window.addEventListener('DOMContentLoaded', () => 
+        {
+            @if (ViewBag.Error != null)
+            {
+                <text>
+                    document.getElementById('errorMessage').style.display = 'block';
+                </text>
+            }
+        });
+    </script>
+    }
+    

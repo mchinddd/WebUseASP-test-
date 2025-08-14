@@ -1,0 +1,76 @@
+﻿@model WebUseASP_test_.Models.ViewModels.StudentProfileViewModel
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+@section Styles {
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="~/css/style.css" />
+}
+
+<div class="container">
+    <!-- Sidebar -->
+    <partial name="_SidebarStudent" />
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Header -->
+        <partial name="_Header" />
+
+        <!-- Content -->
+        <div class="content">
+
+<div class="profile-card">
+    <img src="~/images/avatarFireFly.jpg" alt="Anime Avatar" class="profile-avatar" />
+    <h2 class="student-name">@Model.FullName</h2>
+    <p class="student-id">@Model.StudentCode - @Model.ClassName</p>
+
+    <div class="student-info-grid">
+        <div class="info-item">
+            <div class="info-label">Ngày sinh</div>
+            <div class="info-value">@Model.DateOfBirth.ToString("dd/MM/yyyy")</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Giới tính</div>
+            <div class="info-value">@Model.Gender</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Địa chỉ</div>
+            <div class="info-value">@Model.Address</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">SĐT</div>
+            <div class="info-value">@Model.Phone</div>
+        </div>
+    </div>
+</div>
+
+<!-- Thống kê nhanh -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-book"></i></div>
+        <div class="stat-content">
+            <div class="stat-value">@Model.AverageScore</div>
+            <div class="stat-label">Điểm trung bình</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="stat-content">
+            <div class="stat-value">@Model.SubjectsCount</div>
+            <div class="stat-label">Môn đang học</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-content">
+            <div class="stat-value">@Model.AttendanceRate%</div>
+            <div class="stat-label">Điểm danh</div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>

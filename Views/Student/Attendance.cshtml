@@ -1,0 +1,71 @@
+﻿@model IEnumerable<WebUseASP_test_.Models.Attendance>
+@{
+    ViewData["Title"] = "Điểm danh";
+}
+@section Styles {
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="~/css/style.css" />
+}
+
+<div class="container">
+    <!-- Sidebar -->
+    <partial name="_SidebarStudent" />
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Header -->
+        <partial name="_Header" />
+
+        <!-- Content -->
+        <div class="content">
+<div class="attendance-card">
+    <div class="card-header">
+        <div class="card-title">Lịch sử điểm danh</div>
+    </div>
+
+    <table class="attendance-table">
+        <thead>
+            <tr>
+                <th>Ngày</th>
+                <th>Lớp</th>
+                <th>Buổi sáng</th>
+                <th>Buổi chiều</th>
+                <th>Ghi chú</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center">Chưa có dữ liệu điểm danh</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var a in Model)
+                {
+                    <tr>
+                        <td>@a.AttendanceDate.ToString("dd/MM/yyyy")</td>
+                        <td>@a.Class?.ClassName</td>
+                        <td>
+                            @(a.MorningSession ? "Có mặt" : "Vắng")
+                        </td>
+                        <td>
+                            @(a.AfternoonSession ? "Có mặt" : "Vắng")
+                        </td>
+                        <td>@a.Notes</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+        </div>
+    </div>
+</div>
+
+
+

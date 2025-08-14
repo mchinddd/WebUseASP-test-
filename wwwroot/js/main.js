@@ -128,3 +128,25 @@ document.querySelector(".add-btn")?.addEventListener("click", function () {
     // Code hiển thị modal thêm học sinh
     alert("Modal thêm học sinh sẽ được hiển thị ở đây");
 });
+
+// Xử lý hiển thị dropdown và đăng xuất
+document.addEventListener("click", function (e) {
+    // Đóng dropdown khi click ra ngoài
+    const dropdown = document.querySelector(".avatar-dropdown");
+    const avatar = document.querySelector(".user-avatar");
+
+    if (dropdown && avatar &&
+        !avatar.contains(e.target) &&
+        dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+    }
+});
+
+// Xử lý hiển thị dropdown
+document.querySelector(".user-avatar")?.addEventListener("click", function (e) {
+    e.stopPropagation();
+    const dropdown = this.querySelector(".avatar-dropdown");
+    if (dropdown) {
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+});
