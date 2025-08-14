@@ -44,88 +44,175 @@ namespace WebUseASP_test_.Controllers
             return View();
         }
 
-        // Tạo người dùng mới (POST)
+        // Tạo người dùng mới (POST) - ĐÃ CẬP NHẬT
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateUser(User model)
         {
             if (ModelState.IsValid)
             {
-                // Thêm User
-                model.CreatedDate = DateTime.Now;
-                model.IsActive = true;
-                _context.Users.Add(model);
-                _context.SaveChanges();
-
-                // Nếu là Student thì tạo Student record
-                if (model.RoleID == 3)
+                try
                 {
-                    var student = new Student
+                    // Kiểm tra username đã tồn tại
+                    if (_context.Users.Any(u => u.Username == model.Username))
                     {
-                        UserID = model.UserID,
-                        StudentCode = "ST" + model.UserID.ToString("D4"), // tự sinh mã
-                        DateOfBirth = DateTime.Now, // hoặc nhập từ form
-                        Gender = "Nam",
-                        Address = "Chưa cập nhật",
-                        ClassID = 0 // hoặc gán class mặc định
-                    };
-                    _context.Students.Add(student);
-                    _context.SaveChanges();
-                }
+                        ModelState.AddModelError("Username", "Tài khoản đã tồn tại");
+                        return View(model);
+                    }
 
-                // Nếu là Teacher thì tạo Teacher record
-                if (model.RoleID == 2)
+                    // Mã hóa mật khẩu
+                    model.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                    model.CreatedDate = DateTime.Now;
+
+                    _context.Users.Add(model);
+                    _context.SaveChanges();
+
+                    // Tạo Student/Teacher nếu cần
+                    if (model.RoleID == 3) // Student
+                    {
+                        _context.Students.Add(new Student
+                        {
+                            UserID = model.UserID,
+                            StudentCode = "ST" + model.UserID.ToString("D4"),
+                            DateOfBirth = DateTime.Today.AddYears(-15),
+                            Gender = "Nam",
+                            Address = "Chưa cập nhật"
+                        });
+                    }
+                    else if (model.RoleID == 2) // Teacher
+                    {
+                        _context.Teachers.Add(new Teacher
+                        {
+                            UserID = model.UserID,
+                            TeacherCode = "TC" + model.UserID.ToString("D4"),
+                            Department = "Chưa cập nhật"
+                        });
+                    }
+
+                    _context.SaveChanges();
+                    TempData["SuccessMessage"] = "Thêm người dùng thành công!";
+                    return RedirectToAction("Users");
+                }
+                catch (Exception ex)
                 {
-                    var teacher = new Teacher
-                    {
-                        UserID = model.UserID,
-                        TeacherCode = "TC" + model.UserID.ToString("D4"),
-                        Department = "Chưa cập nhật",
-                        Specialization = "Chưa cập nhật"
-                    };
-                    _context.Teachers.Add(teacher);
-                    _context.SaveChanges();
+                    ModelState.AddModelError("", $"Lỗi: {ex.Message}");
                 }
-
-                // Chuyển hướng về Dashboard thay vì Users
-                return RedirectToAction("Users");
             }
             return View(model);
         }
 
-
-        // Sửa người dùng (GET)
+        // Sửa người dùng (GET) - ĐÃ CẬP NHẬT
         [HttpGet]
         public IActionResult EditUser(int id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserID == id);
+            var user = _context.Users
+                .Include(u => u.Student)
+                .Include(u => u.Teacher)
+                .FirstOrDefault(u => u.UserID == id);
+
             if (user == null) return NotFound();
             return View(user);
         }
 
-        // Sửa người dùng (POST)
+        // Sửa người dùng (POST) - ĐÃ CẬP NHẬT
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditUser(User model)
         {
             if (ModelState.IsValid)
             {
-                _context.Users.Update(model);
-                _context.SaveChanges();
-                return RedirectToAction("Users");
+                try
+                {
+                    // Lấy user hiện tại
+                    var existingUser = _context.Users
+                        .Include(u => u.Student)
+                        .Include(u => u.Teacher)
+                        .First(u => u.UserID == model.UserID);
+
+                    // Cập nhật thông tin cơ bản
+                    existingUser.FullName = model.FullName;
+                    existingUser.Email = model.Email;
+                    existingUser.Phone = model.Phone;
+                    existingUser.RoleID = model.RoleID;
+                    existingUser.IsActive = model.IsActive;
+
+                    // Xử lý mật khẩu (chỉ cập nhật nếu có thay đổi)
+                    if (!string.IsNullOrEmpty(model.Password))
+                    {
+                        existingUser.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                    }
+
+                    // Xử lý Student/Teacher khi thay đổi Role
+                    if (model.RoleID == 3 && existingUser.Student == null)
+                    {
+                        _context.Students.Add(new Student
+                        {
+                            UserID = model.UserID,
+                            StudentCode = "ST" + model.UserID.ToString("D4"),
+                            DateOfBirth = DateTime.Today.AddYears(-15),
+                            Gender = "Nam"
+                        });
+
+                        // Xóa Teacher nếu có
+                        if (existingUser.Teacher != null)
+                        {
+                            _context.Teachers.Remove(existingUser.Teacher);
+                        }
+                    }
+                    else if (model.RoleID == 2 && existingUser.Teacher == null)
+                    {
+                        _context.Teachers.Add(new Teacher
+                        {
+                            UserID = model.UserID,
+                            TeacherCode = "TC" + model.UserID.ToString("D4")
+                        });
+
+                        // Xóa Student nếu có
+                        if (existingUser.Student != null)
+                        {
+                            _context.Students.Remove(existingUser.Student);
+                        }
+                    }
+
+                    _context.SaveChanges();
+                    TempData["SuccessMessage"] = "Cập nhật thành công!";
+                    return RedirectToAction("Users");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Lỗi: {ex.Message}");
+                }
             }
             return View(model);
         }
 
-        // Xóa người dùng
+        // Xóa người dùng - ĐÃ CẬP NHẬT
         public IActionResult DeleteUser(int id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserID == id);
-            if (user != null)
+            try
             {
-                _context.Users.Remove(user);
-                _context.SaveChanges();
+                var user = _context.Users
+                    .Include(u => u.Student)
+                    .Include(u => u.Teacher)
+                    .FirstOrDefault(u => u.UserID == id);
+
+                if (user != null)
+                {
+                    // Xóa Student/Teacher trước
+                    if (user.Student != null) _context.Students.Remove(user.Student);
+                    if (user.Teacher != null) _context.Teachers.Remove(user.Teacher);
+
+                    _context.Users.Remove(user);
+                    _context.SaveChanges();
+                    TempData["SuccessMessage"] = "Xóa người dùng thành công!";
+                }
+                return RedirectToAction("Users");
             }
-            return RedirectToAction("Users");
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Lỗi khi xóa: {ex.Message}";
+                return RedirectToAction("Users");
+            }
         }
 
         //hien thi du lieu student

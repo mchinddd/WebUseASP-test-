@@ -15,5 +15,9 @@ namespace WebUseASP_test_.Models
         public bool IsActive { get; set; }
 
         public Role Role { get; set; }
+
+        // Thêm 2 navigation properties
+        public Student Student { get; set; }
+        public Teacher Teacher { get; set; }
     }
 }

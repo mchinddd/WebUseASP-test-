@@ -26,5 +26,18 @@ namespace WebUseASP_test_.Data
         public DbSet<SystemSetting> SystemSettings { get; set; }
         public DbSet<Authentication> Authentications { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Student)
+                .WithOne(s => s.User)
+                .HasForeignKey<Student>(s => s.UserID);
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Teacher)
+                .WithOne(t => t.User)
+                .HasForeignKey<Teacher>(t => t.UserID);
+        }
     }
 }
