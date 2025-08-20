@@ -26,6 +26,7 @@
             <th>Ngày sinh</th>
             <th>Giới tính</th>
             <th>Địa chỉ</th>
+                        <th>Điều chỉnh</th>
         </tr>
     </thead>
     <tbody>
@@ -37,6 +38,13 @@
                 <td>@s.DateOfBirth.ToString("dd/MM/yyyy")</td>
                 <td>@s.Gender</td>
                 <td>@s.Address</td>
+                            <td>
+                                <form asp-action="RemoveStudentFromClass" method="post" style="display:inline">
+                                    <input type="hidden" name="studentId" value="@s.StudentID" />
+                                    <input type="hidden" name="classId" value="@ViewBag.ClassID" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Xóa khỏi lớp</button>
+                                </form>
+                            </td>
             </tr>
         }
     </tbody>

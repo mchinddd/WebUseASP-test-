@@ -17,8 +17,14 @@
     <div class="main-content">
         <partial name="_Header" />
         <div class="content">
+            <form id="antiForgeryForm">
+                @Html.AntiForgeryToken()
+            </form>
             <h1>Quản lý giáo viên</h1>
             <a class="btn btn-primary mb-3" asp-action="CreateTeacher">+ Thêm giáo viên</a>
+
+            <div id="notification"></div>
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -43,7 +49,13 @@
                             <td>@t.Specialization</td>
                             <td>
                                 <a asp-action="EditTeacher" asp-route-id="@t.TeacherID" class="btn btn-sm btn-warning">Sửa</a>
-                                <a asp-action="DeleteTeacher" asp-route-id="@t.TeacherID" class="btn btn-sm btn-danger" onclick="return confirm('Xóa giáo viên này?');">Xóa</a>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal"
+                                        data-id="@t.TeacherID"
+                                        data-name="@t.FullName">
+                                    Xóa
+                                </button>
                             </td>
                         </tr>
                     }
@@ -53,7 +65,83 @@
     </div>
 </div>
 
+<!-- Modal xác nhận xóa -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa giáo viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteMessage">Bạn có chắc muốn xóa?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let teacherId = 0;
+
+        // Khi mở modal, lấy id từ button
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            teacherId = button.getAttribute('data-id');
+            var name = button.getAttribute('data-name');
+            document.getElementById("deleteMessage").innerText =
+                "Bạn có chắc chắn muốn xóa giáo viên: " + name + " ?";
+        });
+
+        // Khi nhấn nút xác nhận xóa
+        document.getElementById('confirmDelete').addEventListener('click', function () {
+            const token = $('input[name="__RequestVerificationToken"]').val();
+
+            fetch('/Admin/DeleteTeacherConfirmed', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ id: teacherId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                var modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                modal.hide();
+
+                let notification = document.getElementById("notification");
+                notification.innerHTML = `
+                    <div class="alert ${data.success ? 'alert-success' : 'alert-danger'} alert-dismissible fade show mt-3" role="alert">
+                        ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>`;
+
+                if (data.success) {
+                    setTimeout(() => location.reload(), 1500);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                document.getElementById("notification").innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                        Có lỗi xảy ra khi xóa. Vui lòng thử lại sau.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>`;
+            });
+        });
+    </script>
 }

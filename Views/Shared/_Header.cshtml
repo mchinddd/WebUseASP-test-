@@ -1,8 +1,29 @@
-﻿@*
-   Views/Shared/_Header.cshtml
-*@
+﻿@using System.Security.Claims
+
 @{
     ViewData["Title"] = "Header";
+    // Lấy tên hiển thị: ưu tiên claim "FullName", sau đó tới ClaimTypes.Name, rồi fallback "Khách"
+    var fullName = User.FindFirst("FullName")?.Value
+                   ?? User.FindFirst(ClaimTypes.Name)?.Value
+                   ?? "Khách";
+
+    // Claim role có thể là "1/2/3" hoặc "Admin/Teacher/Student"
+    var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
+
+    // Map ra tên vai trò để hiển thị tiếng Việt
+    var roleName = roleClaim switch
+    {
+        "1" => "Quản trị hệ thống",
+        "2" => "Giáo viên",
+        "3" => "Học sinh",
+        _ when roleClaim.Equals("Admin", StringComparison.OrdinalIgnoreCase) => "Quản trị hệ thống",
+        _ when roleClaim.Equals("Teacher", StringComparison.OrdinalIgnoreCase) => "Giáo viên",
+        _ when roleClaim.Equals("Student", StringComparison.OrdinalIgnoreCase) => "Học sinh",
+        _ => "Người dùng"
+    };
+
+    // Xác định có phải admin không (hỗ trợ cả kiểu số và chữ)
+    var isAdmin = roleClaim == "1" || roleClaim.Equals("Admin", StringComparison.OrdinalIgnoreCase);
 }
 
 <!-- Header -->
@@ -18,17 +39,17 @@
             <i class="fas fa-moon"></i>
         </button>
         <div class="user-avatar">
-            <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff"
+            <img src="https://ui-avatars.com/api/?name=@fullName&background=4361ee&color=fff"
                  alt="Avatar"
                  class="avatar-img" />
             <div class="avatar-dropdown">
                 <div class="dropdown-header">
-                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff&size=100"
+                    <img src="https://ui-avatars.com/api/?name=@fullName&background=4361ee&color=fff&size=100"
                          alt="User"
                          class="dropdown-avatar" />
                     <div class="user-info">
-                        <div class="user-name">Admin User</div>
-                        <div class="user-role">Quản trị hệ thống</div>
+                        <div class="user-name">@fullName</div>
+                        <div class="user-role">@roleName</div>
                     </div>
                 </div>
                 <div class="dropdown-item">
@@ -39,11 +60,13 @@
                     <i class="fas fa-cog dropdown-icon"></i>
                     <span class="dropdown-text">Cài đặt tài khoản</span>
                 </div>
-                <div class="dropdown-item">
-                    <i class="fas fa-palette dropdown-icon"></i>
-                    <span class="dropdown-text">Hệ thống</span>
-                </div>
-                <!-- Cập nhật phần đăng xuất -->
+                @if (isAdmin)
+                {
+                    <div class="dropdown-item">
+                        <i class="fas fa-palette dropdown-icon"></i>
+                        <span class="dropdown-text">Hệ thống</span>
+                    </div>
+                }
                 <div class="dropdown-item">
                     <i class="fas fa-sign-out-alt dropdown-icon"></i>
                     <form asp-controller="Login" asp-action="Logout" method="post">

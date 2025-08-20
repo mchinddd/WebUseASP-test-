@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using WebUseASP_test_.Data;
 using WebUseASP_test_.Models;
+using WebUseASP_test_.Helpers;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,46 +41,46 @@ namespace WebUseASP_test_.Controllers
 
             if (user != null)
             {
-                // Tạo claims identity
+                // Convert RoleID -> RoleName
+                string roleName = RoleHelper.GetRoleName(user.RoleID.ToString());
+
+                // Claims
                 var claims = new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                     new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Role, user.RoleID.ToString())
+                    new Claim(ClaimTypes.Role, roleName) // <-- dùng RoleName
                 };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
 
-                // Cấu hình thuộc tính xác thực
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = remember, // "Ghi nhớ đăng nhập"
+                    IsPersistent = remember,
                     AllowRefresh = true
                 };
 
-                // Đăng nhập
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     principal,
                     authProperties);
 
-                // Chuyển hướng theo role
-                return RedirectBasedOnRole(user.RoleID.ToString());
+                return RedirectBasedOnRole(roleName);
             }
 
-            // Lưu lại username để hiển thị lại form
             TempData["Username"] = username;
             ViewBag.Error = "Tên đăng nhập hoặc mật khẩu không đúng";
             return View();
         }
 
-        private IActionResult RedirectBasedOnRole(string roleId)
+        private IActionResult RedirectBasedOnRole(string roleName)
         {
-            return roleId switch
+            return roleName switch
             {
-                "1" => RedirectToAction("Dashboard", "Admin"),
-                "2" => RedirectToAction("Index", "Teacher"),
+                RoleHelper.Admin => RedirectToAction("Dashboard", "Admin"),
+                RoleHelper.Teacher => RedirectToAction("Index", "Teacher"),
+                RoleHelper.Student => RedirectToAction("Dashboard", "Student"),
                 _ => RedirectToAction("Dashboard", "Student")
             };
         }

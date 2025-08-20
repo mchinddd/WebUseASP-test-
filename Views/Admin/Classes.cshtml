@@ -42,7 +42,13 @@
                 <td>@c.StudentCount</td>
                 <td>
                     <a asp-action="EditClass" asp-route-id="@c.ClassID" class="btn btn-sm btn-warning">Sửa</a>
-                    <a asp-action="DeleteClass" asp-route-id="@c.ClassID" class="btn btn-sm btn-danger" onclick="return confirm('Xóa lớp này?');">Xóa</a>
+                                <button class="btn btn-sm btn-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal"
+                                        data-id="@c.ClassID">
+                                    Xóa
+                                </button>
+
                 </td>
             </tr>
         }
@@ -51,8 +57,38 @@
 </div>
 </div>
 </div>
-
+<!-- Modal Xác nhận Xóa -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Xác nhận xóa lớp</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa lớp này không? <br />
+                <strong>Lưu ý:</strong> Nếu lớp còn học sinh hoặc giáo viên thì sẽ không thể xóa.
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="post" asp-action="DeleteClass">
+                    <input type="hidden" name="id" id="deleteClassId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script>
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Nút được ấn
+            var classId = button.getAttribute('data-id');
+            var inputId = deleteModal.querySelector('#deleteClassId');
+            inputId.value = classId;
+        });
+    </script>
 }
